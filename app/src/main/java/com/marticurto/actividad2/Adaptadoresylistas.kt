@@ -20,6 +20,12 @@ private lateinit var btSimple2: Button
 private lateinit var btFrutas: Button
 
 
+/**
+ * Creamos la actividad y la pintamos
+ *
+ * @author Martí Curto Vendrell
+ *
+ */
 class Adaptadoresylistas : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,39 +102,35 @@ class Adaptadoresylistas : AppCompatActivity() {
         lvSimple1.adapter=adapter
     }
 
+    /**
+     * Llenamos el listview a partir de la inforamcion preexistente en la funcion
+     *
+     */
     private fun llamadaAdaptadorPropioListView() {
         // Creamos los datos
-        val arrayOfUsers_jmh = ArrayList<User?>()
-        arrayOfUsers_jmh.add(User("Nathan", "San Diego"))
-        arrayOfUsers_jmh.add(User("Nathan", "San Diego"))
-        arrayOfUsers_jmh.add(User("Nathan", "San Diego"))
-        arrayOfUsers_jmh.add(User("Nathan", "San Diego"))
-        arrayOfUsers_jmh.add(User("Nathan", "San Diego"))
-        arrayOfUsers_jmh.add(User("Nathan", "San Diego"))
-        arrayOfUsers_jmh.add(User("Nathan", "San Diego"))
-        arrayOfUsers_jmh.add(User("Nathan", "San Diego"))
-        arrayOfUsers_jmh.add(User("Nathan", "San Diego"))
-        arrayOfUsers_jmh.add(User("Nathan", "San Diego"))
-        arrayOfUsers_jmh.add(User("Nathan", "San Diego"))
-        arrayOfUsers_jmh.add(User("Nathan", "San Diego"))
-        arrayOfUsers_jmh.add(User("Nathan", "San Diego"))
-        arrayOfUsers_jmh.add(User("Nathan", "San Diego"))
-        arrayOfUsers_jmh.add(User("Nathan", "San Diego"))
-        arrayOfUsers_jmh.add(User("Nathan", "San Diego"))
-        arrayOfUsers_jmh.add(User("Nathan", "San Diego"))
+        val usersList = ArrayList<User?>()
+        usersList.add(User("Martí", "Barcelona"))
+        usersList.add(User("Irene", "Barcelona"))
+        usersList.add(User("Gael", "Barcelona"))
+        usersList.add(User("Gagriel", "Badalona"))
+        usersList.add(User("Nerea", "Badalona"))
+        usersList.add(User("Sofía", "Badalona"))
+
         // Definimos el adaptador propio. En este caso no posee layout.
-        val adapter_jmh = UsersAdapter(this, arrayOfUsers_jmh)
+        val adapter = UsersAdapter(this, usersList)
         // Attach the adapter to a ListView
-        val listView_jmh = findViewById<View>(R.id.lvSimple1) as ListView
-        listView_jmh.adapter = adapter_jmh
-        // Limpiar el adaptador
-        //adapter_jmh.clear();
+        lvSimple1 = findViewById<View>(R.id.lvSimple1) as ListView
+        lvSimple1.adapter = adapter
     }
 
+    /**
+     * Creamos la actividad "Frutas"
+     *
+     * @param view
+     */
     fun initiateFruitsActivity(view: View){
         val intent= Intent(this, Frutas::class.java)
         startActivity(intent)
     }
-
 
 }

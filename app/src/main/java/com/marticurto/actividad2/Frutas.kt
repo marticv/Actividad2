@@ -10,6 +10,10 @@ import kotlin.collections.ArrayList
 
 private lateinit var lvFrutas:ListView
 
+/**
+ * @author Martí Curto Vendrell
+ *
+ */
 class Frutas : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,12 +30,10 @@ class Frutas : AppCompatActivity() {
         myFruitList.add(Fruit(4,"Naranja"))
         myFruitList.add(Fruit(5,"Piña"))
 
-
         // Definimos el adaptador propio y lo ligamos al listView
         val fruitsAdapter = FruitsAdapter(this, myFruitList)
         lvFrutas = findViewById<View>(R.id.lvFrutas) as ListView
         lvFrutas.adapter = fruitsAdapter
-
     }
 
 }

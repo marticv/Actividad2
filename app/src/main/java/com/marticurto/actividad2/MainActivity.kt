@@ -5,6 +5,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 
+/**
+ * Creamos lo neceasio para que la app funcione
+ *
+ * @author Martí Curto Vendrell
+ */
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

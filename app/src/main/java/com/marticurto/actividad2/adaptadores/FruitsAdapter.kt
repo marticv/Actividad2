@@ -11,6 +11,15 @@ import com.marticurto.actividad2.clases.Fruit
 import com.marticurto.actividad2.R
 import java.util.ArrayList
 
+/**
+ * Adaptador propio para añadir frutas a un ListView
+ *
+ * @constructor
+ * Contexto y Arraylist de frutas
+ *
+ * @param context
+ * @param fruits
+ */
 class FruitsAdapter(context: Context?, fruits: ArrayList<Fruit?>?) : ArrayAdapter<Fruit?>(
     context!!, 0, fruits!!) {
 

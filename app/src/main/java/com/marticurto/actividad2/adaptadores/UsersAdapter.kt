@@ -11,6 +11,15 @@ import com.marticurto.actividad2.R
 import com.marticurto.actividad2.clases.User
 import java.util.ArrayList
 
+/**
+ * @author José Maria Herrera
+ *
+ * @constructor
+ * TODO
+ *
+ * @param context
+ * @param users
+ */
 class UsersAdapter  // El constructor solo recibe dos parámentro, pero le pasa al padre/madre 3
 // El layout que se le pasa es el 0 debido a que se le pasa uno propio más abajo al realizar el inflate
     (context: Context?, users: ArrayList<User?>?) : ArrayAdapter<User?>(
