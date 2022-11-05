@@ -1,3 +1,5 @@
 package com.marticurto.actividad2.clases
 
-class Fruit(var imagen:Int, var name: String)
+import android.graphics.Bitmap
+
+class Fruit(var imagen:Bitmap, var name: String)

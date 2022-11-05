@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import com.marticurto.actividad2.clases.Fruit
 import com.marticurto.actividad2.R
@@ -50,21 +51,44 @@ class FruitsAdapter(context: Context?, fruits: ArrayList<Fruit?>?) : ArrayAdapte
         }
 
         // Creamos las variables que apuntan a los TextView del layout "item_fruit.xml"
-        val tvImagen = convertView!!.findViewById<View>(R.id.imgFruit) as TextView
+        val tvImagen = convertView!!.findViewById<View>(R.id.ivFruta) as ImageView
         val tvFruit = convertView.findViewById<View>(R.id.tvFruit) as TextView
         var tvQuantity = convertView.findViewById<View>(R.id.tvQuantity) as TextView
         val btRest = convertView.findViewById<View>(R.id.btRest) as Button
         val btAdd = convertView.findViewById<View>(R.id.btAdd) as Button
 
         // pasamos la info de la fruta a los imageView y textView
-        tvImagen.text = fruta!!.imagen.toString()
-        tvFruit.text = fruta.name
+        if (fruta != null) {
+            tvImagen.setImageBitmap(fruta.imagen)
+        }
+        if (fruta != null) {
+            tvFruit.text = fruta.name
+        }
 
         //Añadimos funcionalidad a los botones
-        btRest.setOnClickListener {  }
-        btAdd.setOnClickListener {  }
+        btRest.setOnClickListener {
+            substractFruit(tvQuantity)
+        }
+        btAdd.setOnClickListener {
+            addFruit(tvQuantity)
+        }
 
         // Devolvemos la vista para que se pinte (render) por la pantalla
         return convertView
+    }
+    private fun addFruit(tv:TextView){
+        val entry:String= tv.text.toString()
+        var result: Int=entry.toInt()
+        result++
+        tv.text=result.toString()
+    }
+
+    private fun substractFruit(tv:TextView){
+        val entry:String= tv.text.toString()
+        var result: Int=entry.toInt()
+        if(result>0) {
+            result--
+            tv.text = result.toString()
+        }
     }
 }

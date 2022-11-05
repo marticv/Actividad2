@@ -25,4 +25,9 @@ class MainActivity : AppCompatActivity() {
         val intent= Intent(this, Adaptadoresylistas::class.java)
         startActivity(intent)
     }
+
+    fun initiateExtraActivity(view: View){
+        val intent = Intent(this, ExtraFrutas::class.java)
+        startActivity(intent)
+    }
 }
