@@ -30,4 +30,9 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this, ExtraFrutas::class.java)
         startActivity(intent)
     }
+
+    fun initiateSecondExercise(view: View){
+        val intent=Intent(this,CurrencyList::class.java)
+        startActivity((intent))
+    }
 }
