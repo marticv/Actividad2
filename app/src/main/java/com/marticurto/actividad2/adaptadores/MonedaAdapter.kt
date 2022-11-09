@@ -17,8 +17,8 @@ class MonedaAdapter   (context: Context?, monedas: ArrayList<Moneda?>?) : ArrayA
     context!!, 0, monedas!!
 ) {
     private class ViewHolder {
-        var iniciales: TextView? = null
-        var valor: TextView? = null
+        var tvIniciales: TextView? = null
+        var tvValor: TextView? = null
     }
 
     // El método getView se llamará tantas veces como registros tengan los datos a visualizar.
@@ -35,7 +35,7 @@ class MonedaAdapter   (context: Context?, monedas: ArrayList<Moneda?>?) : ArrayA
         // en caso que esté vacía usaremos la vista (el layout) que hemos creado para visualizar los elementes
         // el inflater se encarga de pintarlo.
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.item_user, parent, false)
+            convertView = LayoutInflater.from(context).inflate(R.layout.item_moneda, parent, false)
         }
         // Creamos las variables que apuntan a los TextView definidos en el layout "item_user.xml"
         val tvIniciales = convertView!!.findViewById<View>(R.id.tvIniciales) as TextView

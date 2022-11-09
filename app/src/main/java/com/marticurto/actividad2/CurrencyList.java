@@ -86,24 +86,28 @@ public class CurrencyList extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String mensaje) {
-            tvTitulo=findViewById(R.id.textView);
-            tvTitulo.setText("Source: Internet");
-            Document document = convertirStringToXMLDocument(mensaje);
-            NodeList listaItem = document.getElementsByTagName("Cube");
-            ArrayList arrayList = new ArrayList<Moneda>();
-            for (int i = 0; i < listaItem.getLength(); i++) {
-                Element element = (Element) listaItem.item(i);
-                String var_id =  element.getAttribute("currency");
-                String var_value =  element.getAttribute("rate");
-                if(!var_id.equals("")&&var_id!=null) {
-                    Moneda item = new Moneda(var_id, var_value);
-                    arrayList.add(item);
+            tvTitulo = findViewById(R.id.textView);
+            if (!mensaje.equals("error")) {
+                tvTitulo.setText("Source: Internet");
+                Document document = convertirStringToXMLDocument(mensaje);
+                NodeList listaItem = document.getElementsByTagName("Cube");
+                ArrayList arrayList = new ArrayList<Moneda>();
+                for (int i = 0; i < listaItem.getLength(); i++) {
+                    Element element = (Element) listaItem.item(i);
+                    String var_id = element.getAttribute("currency");
+                    String var_value = element.getAttribute("rate");
+                    if (!var_id.equals("") && var_id != null) {
+                        Moneda item = new Moneda(var_id, var_value);
+                        arrayList.add(item);
+                    }
                 }
+                MonedaAdapter adapter = new MonedaAdapter(context, arrayList);
+                //ArrayAdapter adapter =new ArrayAdapter(context, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item,arrayList);
+                ListView lvMonedas = (ListView) findViewById(R.id.lvMonedas);
+                lvMonedas.setAdapter(adapter);
+            }else{
+                tvTitulo.setText("error de conexion");
             }
-            MonedaAdapter adapter = new MonedaAdapter(context,arrayList);
-            //ArrayAdapter adapter =new ArrayAdapter(context, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item,arrayList);
-            ListView lvMonedas =(ListView)findViewById(R.id.lvMonedas);
-            lvMonedas.setAdapter(adapter);
 
             progressDialog.dismiss();
         }
