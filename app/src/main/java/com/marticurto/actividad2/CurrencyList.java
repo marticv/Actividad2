@@ -1,6 +1,9 @@
 package com.marticurto.actividad2;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
@@ -11,12 +14,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.marticurto.actividad2.adaptadores.MonedaAdapter;
 import com.marticurto.actividad2.clases.Moneda;
+import com.marticurto.actividad2.database.SQLiteDB;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -28,6 +33,7 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.sql.SQLData;
 import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -38,6 +44,7 @@ public class CurrencyList extends AppCompatActivity {
     ListView lvMonedas;
     ProgressDialog progressDialog;
     TextView tvTitulo;
+    Button btBorrar;
     Context context=CurrencyList.this;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +52,15 @@ public class CurrencyList extends AppCompatActivity {
         setContentView(R.layout.activity_currency_list);
         MyAsyncTasks myAsyncTasks = new MyAsyncTasks();
         myAsyncTasks.execute(apiUrl);
+        Button btBorrar;
+        btBorrar=findViewById(R.id.btBorrar);
+        btBorrar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteData();
+                Toast.makeText(context,"Base de datos borrada",Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     public class MyAsyncTasks extends AsyncTask<String, String, String> {
@@ -79,6 +95,15 @@ public class CurrencyList extends AppCompatActivity {
                 }
             } catch (Exception e) {
                 resultado = "error";
+                ArrayList<Moneda> monedasFromDB = getDataFromDB();
+                tvTitulo =findViewById(R.id.textView);
+                tvTitulo.setText("Source: Database");
+
+                MonedaAdapter adapter = new MonedaAdapter(context, monedasFromDB);
+                //ArrayAdapter adapter =new ArrayAdapter(context, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item,arrayList);
+                ListView lvMonedas = (ListView) findViewById(R.id.lvMonedas);
+                lvMonedas.setAdapter(adapter);
+
             } finally {
                 return resultado; // se lo pasa a postExecute()
             }
@@ -101,12 +126,13 @@ public class CurrencyList extends AppCompatActivity {
                         arrayList.add(item);
                     }
                 }
+                //pasamos los datos a la base de datos para evitar errores de coneion
+                insertData(arrayList);
+
                 MonedaAdapter adapter = new MonedaAdapter(context, arrayList);
                 //ArrayAdapter adapter =new ArrayAdapter(context, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item,arrayList);
                 ListView lvMonedas = (ListView) findViewById(R.id.lvMonedas);
                 lvMonedas.setAdapter(adapter);
-            }else{
-                tvTitulo.setText("error de conexion");
             }
 
             progressDialog.dismiss();
@@ -126,5 +152,59 @@ public class CurrencyList extends AppCompatActivity {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public void insertData(ArrayList<Moneda> monedas){
+        //creamos la conexion a la base de datos
+        SQLiteDB admin = new SQLiteDB(context,"Administration",null,1);
+        SQLiteDatabase db=admin.getReadableDatabase();
+
+        //insertamos los datos del array a la base de datos
+        for(int i =0; i<monedas.size();i++){
+            ContentValues registro =new ContentValues();
+            registro.put("id",i);
+            registro.put("currency",monedas.get(i).getIniciales());
+            registro.put("ratio",monedas.get(i).getValor());
+            db.insert("monedas",null,registro);
+        }
+    }
+
+    public ArrayList<Moneda> getDataFromDB(){
+        //creamos la conexion a la base de datos
+        SQLiteDB admin = new SQLiteDB(context,"Administration",null,1);
+        SQLiteDatabase db=admin.getReadableDatabase();
+
+        //hacemos la consulta
+        String query="select * from monedas";
+        Cursor c =db.rawQuery(query,null);
+
+        //creamos una lista donde guardamos las monedas
+        ArrayList<Moneda> resultados = new ArrayList<Moneda>();
+        if(c.getCount()>0) {
+            while (c.moveToNext()) {
+                int columnaNombre = c.getColumnIndex("currency");
+                int columnaCambio = c.getColumnIndex("ratio");
+                if (columnaNombre >= 0 && columnaCambio >= 0) {
+                    String nombre = c.getString(columnaNombre);
+                    String ratio = c.getString(columnaCambio);
+                    Moneda moneda = new Moneda(nombre, ratio);
+                    resultados.add(moneda);
+                }
+            }
+        }
+        //cerramos conexion y devolvemos el resultado
+        admin.close();
+        return resultados;
+    }
+
+    public void deleteData(){
+        //creamos la conexion a la base de datos
+        SQLiteDB admin = new SQLiteDB(context,"Administration",null,1);
+        SQLiteDatabase db=admin.getReadableDatabase();
+
+        db.execSQL("delete from monedas");
+        admin.close();
+
+
     }
 }
