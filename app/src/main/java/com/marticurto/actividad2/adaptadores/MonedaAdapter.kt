@@ -5,16 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import com.marticurto.actividad2.R
 import com.marticurto.actividad2.clases.Moneda
-import com.marticurto.actividad2.clases.User
 import java.util.ArrayList
 
-class MonedaAdapter   (context: Context?, monedas: ArrayList<Moneda?>?) : ArrayAdapter<Moneda?>(
-    context!!, 0, monedas!!
+class MonedaAdapter(context: Context?, monedas: ArrayList<Moneda>) : ArrayAdapter<Moneda?>(
+    context!!, 0, monedas!! as List<Moneda?>
 ) {
     private class ViewHolder {
         var tvIniciales: TextView? = null
