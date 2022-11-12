@@ -15,8 +15,7 @@ import java.util.ArrayList
 /**
  * Adaptador propio para añadir frutas a un ListView
  *
- * @constructor
- * Contexto y Arraylist de frutas
+ * @constructor Contexto y Arraylist de frutas
  *
  * @param context
  * @param fruits
@@ -76,6 +75,12 @@ class FruitsAdapter(context: Context?, fruits: ArrayList<Fruit?>?) : ArrayAdapte
         // Devolvemos la vista para que se pinte (render) por la pantalla
         return convertView
     }
+
+    /**
+     * Suma 1 al numero del textView
+     *
+     * @param tv
+     */
     private fun addFruit(tv:TextView){
         val entry:String= tv.text.toString()
         var result: Int=entry.toInt()
@@ -83,6 +88,11 @@ class FruitsAdapter(context: Context?, fruits: ArrayList<Fruit?>?) : ArrayAdapte
         tv.text=result.toString()
     }
 
+    /**
+     * Resta uno al numero del text view (minimo sera 0)
+     *
+     * @param tv
+     */
     private fun substractFruit(tv:TextView){
         val entry:String= tv.text.toString()
         var result: Int=entry.toInt()

@@ -12,14 +12,6 @@ import com.marticurto.actividad2.adaptadores.UsersAdapter
 import com.marticurto.actividad2.clases.User
 import java.util.ArrayList
 
-private lateinit var spSimple: Spinner
-private lateinit var lvSimple1: ListView
-private lateinit var btPropio: Button
-private lateinit var btSimple1: Button
-private lateinit var btSimple2: Button
-private lateinit var btFrutas: Button
-
-
 /**
  * Creamos la actividad y la pintamos
  *
@@ -27,6 +19,13 @@ private lateinit var btFrutas: Button
  *
  */
 class Adaptadoresylistas : AppCompatActivity() {
+    private lateinit var spSimple: Spinner
+    private lateinit var lvSimple1: ListView
+    private lateinit var btPropio: Button
+    private lateinit var btSimple1: Button
+    private lateinit var btSimple2: Button
+    private lateinit var btFrutas: Button
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_adaptadoresylistas)
@@ -58,6 +57,11 @@ class Adaptadoresylistas : AppCompatActivity() {
             llamadaAdaptadorPropioListView()
         }
 
+        //damos funcionalidad al boton frutas
+        btFrutas.setOnClickListener {
+            initiateFruitsActivity()
+        }
+
     }
 
     /**
@@ -66,11 +70,11 @@ class Adaptadoresylistas : AppCompatActivity() {
      */
     private fun llamadaAdaptadorSimpleSpinner(){
         //creamos el array con los datos a visualizar y una variable para controlar el spinner
-        var options:Array<String> = arrayOf("hola","adios","Martí Curto")
+        val options:Array<String> = arrayOf("hola","adios","Martí Curto")
         spSimple=findViewById(R.id.spSimple)
 
         //definimos el adaptador y lo pasamos al spinner
-        var myAdapter: ArrayAdapter<String> = ArrayAdapter(this, com.google.android.material.R.layout.support_simple_spinner_dropdown_item, options)
+        val myAdapter: ArrayAdapter<String> = ArrayAdapter(this, com.google.android.material.R.layout.support_simple_spinner_dropdown_item, options)
         spSimple.adapter=myAdapter
     }
 
@@ -80,11 +84,11 @@ class Adaptadoresylistas : AppCompatActivity() {
      */
     private fun llamadaAdaptadorSimpleListViewConstructor1(){
         //creamos el array con los datos y la variable para controlar el lv
-        var options:Array<String> = arrayOf("hola","adios","viernes")
+        val options:Array<String> = arrayOf("hola","adios","viernes")
         lvSimple1 =findViewById(R.id.lvSimple1)
 
         //creamos el adaptador y lo pasamos al listview
-        var adapter: ArrayAdapter<String> = ArrayAdapter(applicationContext, com.google.android.material.R.layout.support_simple_spinner_dropdown_item,options)
+        val adapter: ArrayAdapter<String> = ArrayAdapter(applicationContext, com.google.android.material.R.layout.support_simple_spinner_dropdown_item,options)
         lvSimple1.adapter=adapter
     }
 
@@ -94,11 +98,11 @@ class Adaptadoresylistas : AppCompatActivity() {
      */
     private fun llamadaAdaptadorSimpleListViewConstructor2(){
         //creamos el array con los datos y la variable para controlar el lv
-        var options:Array<String> = arrayOf("hola","adios")
+        val options:Array<String> = arrayOf("hola","adios")
         lvSimple1 =findViewById(R.id.lvSimple1)
 
         //creamos el adaptador y lo pasamos al listview
-        var adapter: ArrayAdapter<String> = ArrayAdapter(applicationContext, com.google.android.material.R.layout.support_simple_spinner_dropdown_item,options)
+        val adapter: ArrayAdapter<String> = ArrayAdapter(applicationContext, com.google.android.material.R.layout.support_simple_spinner_dropdown_item,options)
         lvSimple1.adapter=adapter
     }
 
@@ -116,21 +120,19 @@ class Adaptadoresylistas : AppCompatActivity() {
         usersList.add(User("Nerea", "Badalona"))
         usersList.add(User("Sofía", "Badalona"))
 
-        // Definimos el adaptador propio. En este caso no posee layout.
+        //Definimos el adaptador propio. En este caso no indicamos layout porque lo hacemos al crear la classe.
         val adapter = UsersAdapter(this, usersList)
-        // Attach the adapter to a ListView
+        //Conectamos el adaptador y la lista
         lvSimple1 = findViewById<View>(R.id.lvSimple1) as ListView
         lvSimple1.adapter = adapter
     }
 
     /**
-     * Creamos la actividad "Frutas"
+     * Creamos la actividad "Frutas" y nos desplazamos allí
      *
-     * @param view
      */
-    fun initiateFruitsActivity(view: View){
+    fun initiateFruitsActivity(){
         val intent= Intent(this, Frutas::class.java)
         startActivity(intent)
     }
-
 }

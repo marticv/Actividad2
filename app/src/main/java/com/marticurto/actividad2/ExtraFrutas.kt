@@ -2,7 +2,6 @@ package com.marticurto.actividad2
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.marticurto.actividad2.R
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.view.View
@@ -16,18 +15,17 @@ class ExtraFrutas : AppCompatActivity() {
         setContentView(R.layout.activity_extra_frutas)
 
         //creamos variables
-        val btShow:Button=findViewById(R.id.btSHow)
-        var etFila:EditText=findViewById(R.id.etFila)
-        var etColumna:EditText=findViewById(R.id.etColumna)
+        val btShow: Button = findViewById(R.id.btSHow)
+        val etFila: EditText = findViewById(R.id.etFila)
+        val etColumna: EditText = findViewById(R.id.etColumna)
 
         //damos funcionalidad al boton
         btShow.setOnClickListener {
-            val fila:Int=getEntry(etFila)
-            val columna:Int=getEntry(etColumna)
+            val fila: Int = getEntry(etFila)
+            val columna: Int = getEntry(etColumna)
 
             showFruit(fila, columna)
         }
-
     }
 
     /**
@@ -36,13 +34,13 @@ class ExtraFrutas : AppCompatActivity() {
      * @param fila
      * @param columna
      */
-    private fun showFruit(fila:Int,columna:Int){
+    private fun showFruit(fila: Int, columna: Int) {
         //creamos variable para trabajar con el imageView y la hacemos visible
         val ivFrutas = findViewById<ImageView>(R.id.ivRecorte)
-        ivFrutas.visibility=View.VISIBLE
+        ivFrutas.visibility = View.VISIBLE
 
         //creamos un bitmap para trabajar con la imagen inicial y la recortamos al gusto
-        var imgFrutas:Bitmap = BitmapFactory.decodeResource(resources, R.drawable.allfruits)
+        var imgFrutas: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.allfruits)
 
         imgFrutas = Bitmap.createBitmap(
             imgFrutas,
@@ -61,31 +59,30 @@ class ExtraFrutas : AppCompatActivity() {
      * @param entry int a comprobar
      * @return int menor a 3
      */
-    private fun checkValue(entry:Int):Int{
-        val result:Int
-        if(entry>3) {
-            result=3
-        }else{
-            result=entry
+    private fun checkValue(entry: Int): Int {
+        val result: Int
+        if (entry > 3) {
+            result = 3
+        } else {
+            result = entry
         }
         return result
     }
 
     /**
-     * Obten el valor del edittext como int
+     * Obten el valor del ediTtext como int
      *
      * @param etEntry
      * @return int con el valor entre 0 y 3
      */
-    private fun getEntry(etEntry:EditText):Int{
+    private fun getEntry(etEntry: EditText): Int {
         //obtenemos el valor del editext
-        val entry:String= etEntry.text.toString()
-        var result: Int
+        val entry: String = etEntry.text.toString()
         //lo pasamos a Int y en caso de que sea null devolvemos 0
-        if(!entry.isNullOrEmpty()) {
-            result= entry.toInt()
-        }else{
-            result=0
+        val result: Int = if (entry.isNotEmpty()) {
+            entry.toInt()
+        } else {
+            0
         }
         return checkValue(result)
     }

@@ -40,19 +40,29 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 public class CurrencyList extends AppCompatActivity {
+
+    //creamos las variables necesarias para la conexion y los elementos del xml
     String apiUrl = "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml";
     ListView lvMonedas;
     ProgressDialog progressDialog;
     TextView tvTitulo;
     Button btBorrar;
     Context context=CurrencyList.this;
+
+    /**
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_currency_list);
+
+        //creamos la conexion en segundo plano
         MyAsyncTasks myAsyncTasks = new MyAsyncTasks();
         myAsyncTasks.execute(apiUrl);
-        Button btBorrar;
+
+        //creamos variable para el boton y le damos funcionalidad
         btBorrar=findViewById(R.id.btBorrar);
         btBorrar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,27 +73,41 @@ public class CurrencyList extends AppCompatActivity {
         });
     }
 
+    /**
+     * Classe para hacer y controlar la conexion a internet o a la base de datos
+     */
     public class MyAsyncTasks extends AsyncTask<String, String, String> {
 
 
+        /**
+         * funciones que se haran antes de que se ejecute la conexion
+         */
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            //informamos al usuario de que tiene que esperar
             progressDialog = new ProgressDialog(CurrencyList.this);
-            progressDialog.setMessage("Please Wait");
+            progressDialog.setMessage("Espere porfavor");
             progressDialog.setCancelable(false);
             progressDialog.show();
         }
 
+        /**
+         * funciones que se haran sin que lo vea el usuario
+         * @param direccion
+         * @return string con la respuesta a la conexion
+         */
         @Override
         protected String doInBackground(String... direccion) {
             String resultado = new String();
+            //intamos conectarnos a la web dada para obtener el xml
             try {
                 URL url = new URL(direccion[0]);
                 HttpURLConnection conexion = (HttpURLConnection) url.openConnection();
                 conexion.setRequestMethod("GET");
                 conexion.connect();
 
+                //creamos un String con la info de la web obtenida
                 StringBuilder respuesta;
                 try (BufferedReader br = new BufferedReader(new InputStreamReader(conexion.getInputStream(), "utf-8"))) {
                     respuesta = new StringBuilder();
@@ -93,54 +117,74 @@ public class CurrencyList extends AppCompatActivity {
                     }
                     resultado = respuesta.toString();
                 }
+            //en caso de error controlamos la conexion con la base de datos
             } catch (Exception e) {
+                //creamos variables necesarias
                 resultado = "error";
-                ArrayList<Moneda> monedasFromDB = getDataFromDB();
                 tvTitulo =findViewById(R.id.textView);
-                tvTitulo.setText("Source: Database");
 
+                //obtenemos los datos de la base de datos y los pasamos al listView
+                ArrayList<Moneda> monedasFromDB = getDataFromDB();
                 MonedaAdapter adapter = new MonedaAdapter(context, monedasFromDB);
-                //ArrayAdapter adapter =new ArrayAdapter(context, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item,arrayList);
+                if(monedasFromDB.size()==0) {
+                    tvTitulo.setText("Error de conexion");
+                }else{
+                    tvTitulo.setText("Source: Database");
+                }
                 ListView lvMonedas = (ListView) findViewById(R.id.lvMonedas);
                 lvMonedas.setAdapter(adapter);
-
             } finally {
-                return resultado; // se lo pasa a postExecute()
+                //devolvemos el resultado ya sea la info obtenida de internet o un mensaje de error
+                return resultado;
             }
         }
 
+        /**
+         * funciones que se haran una vez se haya obtenido o no informacion de internet
+         * @param mensaje
+         */
         @Override
         protected void onPostExecute(String mensaje) {
             tvTitulo = findViewById(R.id.textView);
+            //si se ha obtenido informaicon de internet la pasamos al listview
             if (!mensaje.equals("error")) {
                 tvTitulo.setText("Source: Internet");
+
+                //pasamos la info a un formato xml para trabajar con el
                 Document document = convertirStringToXMLDocument(mensaje);
+                //obtenemos una lista con los nodes "Cube" donde hay la info que queremos y la pasamos a un arraylist de moneda
                 NodeList listaItem = document.getElementsByTagName("Cube");
                 ArrayList arrayList = new ArrayList<Moneda>();
                 for (int i = 0; i < listaItem.getLength(); i++) {
                     Element element = (Element) listaItem.item(i);
                     String var_id = element.getAttribute("currency");
                     String var_value = element.getAttribute("rate");
+                    //controlamos que no haya ningun item "Cube" sin la info que queremos
                     if (!var_id.equals("") && var_id != null) {
                         Moneda item = new Moneda(var_id, var_value);
                         arrayList.add(item);
                     }
                 }
-                //pasamos los datos a la base de datos para evitar errores de coneion
+                //pasamos los datos a la base de datos para evitar errores de conexion en proximos intentos
                 insertData(arrayList);
 
+                //llenamos la lista con la info de internet
                 MonedaAdapter adapter = new MonedaAdapter(context, arrayList);
-                //ArrayAdapter adapter =new ArrayAdapter(context, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item,arrayList);
                 ListView lvMonedas = (ListView) findViewById(R.id.lvMonedas);
                 lvMonedas.setAdapter(adapter);
             }
 
+            //cerramos el progressdialog para que el usuario vea la info en pantalla
             progressDialog.dismiss();
         }
     }
 
-
-
+    /**
+     * Obtenemos un documento en formato xml a partir de una String
+     *
+     * @param xmlString
+     * @return
+     */
     private static Document convertirStringToXMLDocument(String xmlString) {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder ;
@@ -154,6 +198,10 @@ public class CurrencyList extends AppCompatActivity {
         return null;
     }
 
+    /**
+     * insertamos datos obtenido de internet a la base de datos sqlite
+     * @param monedas
+     */
     public void insertData(ArrayList<Moneda> monedas){
         //creamos la conexion a la base de datos
         SQLiteDB admin = new SQLiteDB(context,"Administration",null,1);
@@ -167,8 +215,14 @@ public class CurrencyList extends AppCompatActivity {
             registro.put("ratio",monedas.get(i).getValor());
             db.insert("monedas",null,registro);
         }
+        //cerramos conexion
+        admin.close();
     }
 
+    /**
+     * Obtenemos datos de la base de datos sqlite
+     * @return
+     */
     public ArrayList<Moneda> getDataFromDB(){
         //creamos la conexion a la base de datos
         SQLiteDB admin = new SQLiteDB(context,"Administration",null,1);
@@ -197,14 +251,16 @@ public class CurrencyList extends AppCompatActivity {
         return resultados;
     }
 
+    /**
+     * borra los datos de la base de datos
+     */
     public void deleteData(){
         //creamos la conexion a la base de datos
         SQLiteDB admin = new SQLiteDB(context,"Administration",null,1);
         SQLiteDatabase db=admin.getReadableDatabase();
 
+        //ejecutamos la sentencia de borrado y cerramos conexion
         db.execSQL("delete from monedas");
         admin.close();
-
-
     }
 }

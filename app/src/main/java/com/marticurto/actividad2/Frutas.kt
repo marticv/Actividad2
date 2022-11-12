@@ -5,25 +5,30 @@ import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.ImageView
 import android.widget.ListView
 import com.marticurto.actividad2.adaptadores.FruitsAdapter
 import com.marticurto.actividad2.clases.Fruit
 import kotlin.collections.ArrayList
 
-private lateinit var lvFrutas:ListView
+
 
 /**
  * @author Martí Curto Vendrell
  *
  */
 class Frutas : AppCompatActivity() {
+    private lateinit var lvFrutas:ListView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_frutas)
         printList()
     }
 
+    /**
+     * Rellana la lista con los diferentes item fruta incluidos en la funcion
+     *
+     */
     private fun printList(){
         // Creamos los datos
         val myFruitList = ArrayList<Fruit?>()
@@ -72,5 +77,4 @@ class Frutas : AppCompatActivity() {
         )
         return imgFrutas
     }
-
 }
